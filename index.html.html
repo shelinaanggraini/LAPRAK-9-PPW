@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="id">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Nilai Akhir Mahasiswa
+  </title>
+  <style>
+   * { box-sizing: border-box; }
+
+        body {
+            margin: 0; min-height: 100vh; font-family: Arial, sans-serif;
+            background: #eef3f8; color: #26384a;
+            display: flex; flex-direction: column;
+        }
+
+        header { text-align: center; padding: 28px 16px 8px; }
+        header h1 { margin: 0; font-size: 24px; color: #2f699e; }
+        header p { margin: 8px 0 0; color: #65778a; }
+        main { width: min(540px, 92%); margin: 24px auto; flex: 1; }
+
+        .panel {
+            display: none; background: #fff; padding: 28px;
+            border: 1px solid #d7e2ec; border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(36, 58, 78, .06);
+        }
+
+        .panel.active { display: block; }
+        h2 { margin: 0 0 8px; font-size: 22px; }
+        .intro { color: #687b8e; line-height: 1.5; margin: 0 0 20px; }
+
+        label { display: block; margin: 14px 0 6px; font-size: 14px; }
+
+        input {
+            width: 100%; padding: 11px 12px; border: 1px solid #cbd7e2;
+            border-radius: 6px; font-size: 15px; outline: none;
+        }
+
+        input:focus { border-color: #2f699e; box-shadow: 0 0 0 2px rgba(47,105,158,.12); }
+
+        button {
+            border: 0; border-radius: 6px; padding: 11px 16px;
+            background: #2f699e; color: #fff; font-size: 15px; cursor: pointer;
+        }
+
+        button:hover { background: #265781; }
+
+        .primary { width: 100%; margin-top: 18px; }
+
+        .link-row { text-align: center; margin-top: 18px; font-size: 14px; color: #64778a; }
+
+        .text-btn { padding: 0; background: transparent; color: #2f699e; font-weight: bold; }
+
+        .text-btn:hover { background: transparent; text-decoration: underline; }
+
+        .message { min-height: 22px; margin: 12px 0 0; font-size: 14px; line-height: 1.4; }
+
+        .weights { padding: 12px; margin: 16px 0; border-radius: 6px; background: #f3f7fb; color: #516579; font-size: 14px; }
+
+        #hasilNilai { white-space: pre-line; line-height: 1.7; padding: 14px; margin-top: 16px; background: #f6f8fa; border-radius: 6px; }
+
+        .topline { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 12px; }
+
+        .logout { padding: 8px 12px; font-size: 13px; background: #e7eef5; color: #2f699e; }
+
+        .logout:hover { background: #d9e6f1; }
+
+        @media (max-width: 480px) { .panel { padding: 20px; } header h1 { font-size: 21px; } }
+  </style>
+ </head>
+ <body>
+  <header>
+   <h1>
+    Nilai Mahasiswa
+   </h1>
+   <p>
+    Kelola akun dan hitung nilai akhir dengan mudah.
+   </p>
+  </header>
+  
+  <main> 
+    <!-- Halaman Login -->
+   <section class="panel active" id="loginPanel">
+    <h2>
+     Selamat Datang!
+    </h2>
+    <p class="intro">
+     Silahkan masuk ke akun anda
+    </p>
+    <label for="loginUser">
+     Username atau email
+    </label>
+    <input autocomplete="username" id="loginUser" placeholder="Masukkan username atau email" type="text"/>
+    <label for="loginPass">
+     Password
+    </label>
+    <input autocomplete="current-password" id="loginPass" placeholder="Masukkan password" type="password"/>
+    <button class="primary" id="loginBtn" type="button">
+     Masuk
+    </button>
+    <p aria-live="polite" class="message" id="loginMessage">
+    </p>
+    <div class="link-row">
+     Belum punya akun?
+     <button class="text-btn" id="toRegister" type="button">
+      Daftar sekarang
+     </button>
+    </div>
+   </section>
+
+   <!-- Halaman Registrasi -->
+   <section class="panel" id="registerPanel">
+    <h2>
+     Buat akun baru
+    </h2>
+    <p class="intro">
+     Daftarkan diri Anda untuk mulai menggunakan layanan.
+    </p>
+    <label for="regName">
+     Nama lengkap
+    </label>
+    <input autocomplete="name" id="regName" placeholder="Masukkan nama lengkap" type="text"/>
+    <label for="regUser">
+     Username
+    </label>
+    <input autocomplete="username" id="regUser" placeholder="Buat username" type="text"/>
+    <label for="regEmail">
+     Email
+    </label>
+    <input autocomplete="email" id="regEmail" placeholder="nama@email.com" type="email"/>
+    <label for="regPass">
+     Password
+    </label>
+    <input autocomplete="new-password" id="regPass" placeholder="Minimal 8 karakter" type="password"/>
+    <label for="regConfirm">
+     Konfirmasi password
+    </label>
+    <input autocomplete="new-password" id="regConfirm" placeholder="Ulangi password" type="password"/>
+    <button class="primary" id="registerBtn" type="button">
+     Daftar
+    </button>
+    <p aria-live="polite" class="message" id="registerMessage">
+    </p>
+    <div class="link-row">
+     Sudah punya akun?
+     <button class="text-btn" id="toLogin" type="button">
+      Masuk
+     </button>
+    </div>
+   </section>
+
+   <!-- Halaman Kalkulator Nilai -->
+   <section class="panel" id="gradePanel">
+    <div class="topline">
+     <div>
+      <h2>
+       Penghitungan Nilai Akhir
+      </h2>
+      <p class="intro" style="margin:6px 0 0">
+       Halo,
+       <span id="welcomeName">
+       </span>
+       !
+      </p>
+     </div>
+     <button class="logout" id="logoutBtn" type="button">
+      Keluar
+     </button>
+    </div>
+    <p class="intro">
+     Masukkan nilai tugas, UTS, dan UAS untuk mengetahui nilai akhir Anda.
+    </p>
+    <div class="weights">
+     Bobot penilaian: Tugas 30% &middot; UTS 30% &middot; UAS 40%
+    </div>
+    <label for="nilaiTugas">
+     Nilai Tugas (0&ndash;100)
+    </label>
+    <input id="nilaiTugas" max="100" min="0" placeholder="Nilai tugas" step="any" type="number"/>
+    <label for="nilaiUTS">
+     Nilai UTS (0&ndash;100)
+    </label>
+    <input id="nilaiUTS" max="100" min="0" placeholder="Nilai UTS" step="any" type="number"/>
+    <label for="nilaiUAS">
+     Nilai UAS (0&ndash;100)
+    </label>
+    <input id="nilaiUAS" max="100" min="0" placeholder="Nilai UAS" step="any" type="number"/>
+    <button class="primary" id="hitungBtn" type="button">
+     Hitung Nilai
+    </button>
+    <div aria-live="polite" id="hasilNilai">
+     Hasil perhitungan akan tampil di sini.
+    </div>
+   </section>
+  </main>
+
+  <script>
+   // Data akun yang dibuat pengguna selama sesi halaman berjalan
+        const accounts = [];
+        let currentAccount = null;
+
+        // Mengambil elemen panel
+        const loginPanel = document.getElementById('loginPanel');
+        const registerPanel = document.getElementById('registerPanel');
+        const gradePanel = document.getElementById('gradePanel');
+
+        // Fungsi untuk berpindah halaman
+        function showPanel(panel) {
+            loginPanel.classList.remove('active');
+            registerPanel.classList.remove('active');
+            gradePanel.classList.remove('active');
+            panel.classList.add('active');
+        }
+
+        // Navigasi Login dan Registrasi
+        document.getElementById('toRegister').addEventListener('click', function () {
+            document.getElementById('registerMessage').textContent = '';
+            showPanel(registerPanel);
+        });
+
+        document.getElementById('toLogin').addEventListener('click', function () {
+            document.getElementById('loginMessage').textContent = '';
+            showPanel(loginPanel);
+        });
+
+        // Proses pendaftaran akun
+        document.getElementById('registerBtn').addEventListener('click', function () {
+            const name = document.getElementById('regName').value.trim();
+            const username = document.getElementById('regUser').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPass').value;
+            const confirmPassword = document.getElementById('regConfirm').value;
+            const message = document.getElementById('registerMessage');
+            if (!name || !username || !email || !password || !confirmPassword) {
+                message.textContent = 'Silakan lengkapi seluruh kolom.';
+                message.style.color = '#b42318';
+                return;
+            }
+
+            const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            if (!emailValid) {
+                message.textContent = 'Masukkan alamat email yang valid.';
+                message.style.color = '#b42318';
+                return;
+            }
+
+            if (password.length < 8) {
+                message.textContent = 'Password minimal terdiri dari 8 karakter.';
+                message.style.color = '#b42318';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                message.textContent = 'Konfirmasi password tidak sesuai.';
+                message.style.color = '#b42318';
+                return;
+            }
+
+            const usernameUsed = accounts.some(function (account) {
+                return account.username.toLowerCase() === username.toLowerCase();
+            });
+
+            const emailUsed = accounts.some(function (account) {
+                return account.email.toLowerCase() === email.toLowerCase();
+            });
+
+            if (usernameUsed) {
+                message.textContent = 'Username ini sudah digunakan. Silakan pilih username lain.';
+                message.style.color = '#b42318';
+                return;
+            }
+
+            if (emailUsed) {
+                message.textContent = 'Email ini sudah terdaftar. Gunakan email lain.';
+                message.style.color = '#b42318';
+                return;
+            }
+
+            accounts.push({ name: name, username: username, email: email, password: password });
+
+            message.textContent = 'Akun berhasil dibuat. Silakan masuk menggunakan akun Anda.';
+
+            message.style.color = '#18804b';
+
+            // Bersihkan form registrasi dan kembali ke halaman login
+            document.getElementById('regName').value = '';
+            document.getElementById('regUser').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('regPass').value = '';
+            document.getElementById('regConfirm').value = '';
+            document.getElementById('loginUser').value = username;
+            document.getElementById('loginPass').value = '';
+            document.getElementById('loginMessage').textContent = 'Akun berhasil dibuat. Silakan login.';
+            document.getElementById('loginMessage').style.color = '#18804b';
+            showPanel(loginPanel);
+        });
+
+        // Proses login dan pengecekan data akun
+        document.getElementById('loginBtn').addEventListener('click', function () {
+            const identity = document.getElementById('loginUser').value.trim();
+            const password = document.getElementById('loginPass').value;
+            const message = document.getElementById('loginMessage');
+            if (!identity || !password) {
+                message.textContent = 'Silakan lengkapi username/email dan password.';
+                message.style.color = '#b42318';
+                return;
+            }
+
+            const account = accounts.find(function (item) {
+                return (item.username.toLowerCase() === identity.toLowerCase() ||
+                       item.email.toLowerCase() === identity.toLowerCase()) &&
+                       item.password === password;
+            });
+
+            if (account) {
+                currentAccount = account;
+                document.getElementById('welcomeName').textContent = account.name;
+                message.textContent = 'Login berhasil.';
+                message.style.color = '#18804b';
+                showPanel(gradePanel);
+            } else {
+                message.textContent = 'Username atau password salah. Silakan coba kembali.';
+                message.style.color = '#b42318';
+            }
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', function () {
+            currentAccount = null;
+            document.getElementById('loginPass').value = '';
+            document.getElementById('hasilNilai').textContent = 'Hasil perhitungan akan tampil di sini.';
+            showPanel(loginPanel);
+        });
+
+        // Menghitung nilai akhir mahasiswa
+        document.getElementById('hitungBtn').addEventListener('click', function () {
+            const tugasInput = document.getElementById('nilaiTugas').value;
+            const utsInput = document.getElementById('nilaiUTS').value;
+            const uasInput = document.getElementById('nilaiUAS').value;
+            const output = document.getElementById('hasilNilai');
+
+            if (tugasInput === '' || utsInput === '' || uasInput === '') {
+                output.textContent = 'Semua nilai harus diisi terlebih dahulu.';
+                return;
+            }
+
+            const tugas = Number(tugasInput);
+            const uts = Number(utsInput);
+            const uas = Number(uasInput);
+
+            if ([tugas, uts, uas].some(function (nilai) {
+                return !Number.isFinite(nilai) || nilai < 0 || nilai > 100;
+            })) {
+
+                output.textContent = 'Nilai harus berada di antara 0 sampai 100.';
+                return;
+            }
+
+            const akhir = (tugas * 0.30) + (uts * 0.30) + (uas * 0.40);
+            let grade;
+            if (akhir >= 85) {
+                grade = 'A';
+            } else if (akhir >= 75) {
+                grade = 'B';
+            } else if (akhir >= 65) {
+                grade = 'C';
+            } else if (akhir >= 50) {
+                grade = 'D';
+            } else {
+                grade = 'E';
+            }
+
+            output.textContent =
+                'Nilai Tugas: ' + tugas + '\n' +
+                'Nilai UTS: ' + uts + '\n' +
+                'Nilai UAS: ' + uas + '\n' +
+                'Nilai Akhir: ' + akhir.toFixed(2) + '\n' +
+                'Grade: ' + grade;
+        });
+  </script>
+ </body>
+</html>
